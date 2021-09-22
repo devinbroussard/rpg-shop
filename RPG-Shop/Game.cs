@@ -69,8 +69,6 @@ namespace RPG_Shop
             string input = "";
             int inputReceived = -1;
 
-            while (inputReceived == -1)
-            {
                 Console.WriteLine($"{description}\n");
 
                 for (int i = 0; i < options.Length; i++)
@@ -105,8 +103,7 @@ namespace RPG_Shop
                 }
 
                 Console.Clear();
-            }
-            
+
             return inputReceived;
         }
 
@@ -162,14 +159,7 @@ namespace RPG_Shop
 
             else if (input == 1)
             {
-                if (Load())
-                {
-                    Console.Clear();
-                    Console.WriteLine("Load successful!");
-                    Console.ReadKey(true);
-                    Console.Clear();
-                    _currentScene = 1;
-                }
+                Load();
             }
         }
 
@@ -191,10 +181,6 @@ namespace RPG_Shop
 
         private void DisplayShopMenu() 
         {
-            int inputReceived = -1;
-
-            while (inputReceived == -1)
-            {
                 string[] playerItemNames = _player.GetItemNames();
 
                 Console.WriteLine($"Your gold: {_player.Gold}\n");
@@ -205,36 +191,7 @@ namespace RPG_Shop
                 }
                 Console.WriteLine();
 
-                Console.WriteLine("What would you like to purchase?");
-
-                for (int i = 0; i < GetShopMenuOptions().Length; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {GetShopMenuOptions()[i]}");
-                }
-                Console.Write("> ");
-
-                string input = Console.ReadLine();
-
-                if (int.TryParse(input, out inputReceived))
-                {
-                    //decrement the input and check if it's within the bounds of the array
-                    inputReceived--;
-                    if (inputReceived < 0 || inputReceived >= GetShopMenuOptions().Length) 
-                    {
-                        inputReceived = -1;
-                        Console.WriteLine("\nInvalid input.");
-                        Console.ReadKey(true);
-                    }
-                }
-                else
-                {
-                    inputReceived = -1;
-                    Console.WriteLine("\nInvalid input.");
-                    Console.ReadKey(true);
-                }
-
-                Console.Clear();
-            }
+                int inputReceived = GetInput("What would you like to purchase?", GetShopMenuOptions());
 
             if (inputReceived >= 0 && inputReceived < GetShopMenuOptions().Length - 2)
             {
