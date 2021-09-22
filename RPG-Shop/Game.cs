@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace RPG_Shop
 {
@@ -18,8 +19,6 @@ namespace RPG_Shop
     {
         private Player _player = new Player(350);
         private Shop _shop;
-        private Item[] _playerItems;
-        private Item[] _shopItems;
         private bool _gameOver;
         private int _currentScene;
 
@@ -62,8 +61,7 @@ namespace RPG_Shop
             Item eggs = new Item { Name = "Eggs for Lodis", Cost = 2 };
             Item smashBros = new Item { Name = "Copy of Smash for Lodis", Cost = 60 };
 
-            _shopItems = new Item[] { shotgun, eggs, smashBros };
-            _shop = new Shop(_shopItems);
+            _shop = new Shop(shotgun, eggs, smashBros);
         }
 
         private int GetInput(string description, params string[] options)
@@ -95,14 +93,14 @@ namespace RPG_Shop
                         //Set the input received to be the default value
                         inputReceived = -1;
                         //Display an error message
-                        Console.WriteLine("Invalid input.");
+                        Console.WriteLine("\nInvalid input.");
                         Console.ReadKey(true);
                     }
                 }
                 else
                 {
                     inputReceived = -1;
-                    Console.WriteLine("Invalid input.");
+                    Console.WriteLine("\nInvalid input.");
                     Console.ReadKey(true);
                 }
 
@@ -112,9 +110,33 @@ namespace RPG_Shop
             return inputReceived;
         }
 
-        private void Save() { }
+        private void Save()
+        {
+            StreamWriter writer = new StreamWriter("Inventory.txt");
 
-        private bool Load() { return true; }
+            _player.Save(writer);
+            _shop.Save(writer);
+
+            writer.Close();
+        }
+
+        private bool Load() 
+        {
+            StreamReader reader = new StreamReader("Inventory.txt");
+
+            if (!_player.Load(reader))
+            {
+                reader.Close();
+                return false;
+            }
+            if (!_shop.Load(reader))
+            {
+                reader.Close();
+                return false;
+            }
+
+            return true;
+        }
 
         private void DisplayCurrentScene() 
         {
@@ -169,9 +191,9 @@ namespace RPG_Shop
 
         private void DisplayShopMenu() 
         {
-            int inputReceieved = -1;
+            int inputReceived = -1;
 
-            while (inputReceieved == -1)
+            while (inputReceived == -1)
             {
                 string[] playerItemNames = _player.GetItemNames();
 
@@ -181,21 +203,70 @@ namespace RPG_Shop
                 {
                     Console.WriteLine(itemName);
                 }
+                Console.WriteLine();
 
-                //I Could of put all of this in the GetInput function if I were allowed to use an array in the first argument
                 Console.WriteLine("What would you like to purchase?");
 
                 for (int i = 0; i < GetShopMenuOptions().Length; i++)
                 {
                     Console.WriteLine($"{i + 1}. {GetShopMenuOptions()[i]}");
                 }
+                Console.Write("> ");
 
                 string input = Console.ReadLine();
 
-                
+                if (int.TryParse(input, out inputReceived))
+                {
+                    //decrement the input and check if it's within the bounds of the array
+                    inputReceived--;
+                    if (inputReceived < 0 || inputReceived >= GetShopMenuOptions().Length) 
+                    {
+                        inputReceived = -1;
+                        Console.WriteLine("\nInvalid input.");
+                        Console.ReadKey(true);
+                    }
+                }
+                else
+                {
+                    inputReceived = -1;
+                    Console.WriteLine("\nInvalid input.");
+                    Console.ReadKey(true);
+                }
 
+                Console.Clear();
+            }
 
+            if (inputReceived >= 0 && inputReceived < GetShopMenuOptions().Length - 2)
+            {
+                if (_shop.Sell(_player, inputReceived))
+                {
+                    Console.Clear();
+                    Console.WriteLine($"You purchased the {_shop.GetItemNames()[inputReceived]}!");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("You don't have enough gold for that.");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                }
+            }
 
+            if (inputReceived == GetShopMenuOptions().Length - 2)
+            {
+                Console.Clear();
+                Save();
+
+                Console.WriteLine("Game saved successfully!");
+                Console.ReadKey(true);
+                Console.Clear();
+
+            }
+            if (inputReceived == GetShopMenuOptions().Length - 1)
+            {
+                _gameOver = true;
             }
 
 
