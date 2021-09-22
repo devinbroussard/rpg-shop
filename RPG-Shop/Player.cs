@@ -8,7 +8,7 @@ namespace RPG_Shop
     class Player
     {
         int _gold;
-        Item[] _inventory;
+        Item[] _inventory = new Item[0];
 
         public int Gold
         {

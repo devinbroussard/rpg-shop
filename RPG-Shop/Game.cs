@@ -96,15 +96,16 @@ namespace RPG_Shop
                         inputReceived = -1;
                         //Display an error message
                         Console.WriteLine("Invalid input.");
+                        Console.ReadKey(true);
                     }
                 }
                 else
                 {
                     inputReceived = -1;
                     Console.WriteLine("Invalid input.");
+                    Console.ReadKey(true);
                 }
 
-                Console.ReadKey(true);
                 Console.Clear();
             }
             
@@ -150,18 +151,53 @@ namespace RPG_Shop
             }
         }
 
-        private void GetShopMenuOptions() 
+        private string[] GetShopMenuOptions() 
         {
+            string[] shopItems = _shop.GetItemNames();
+            string[] menuOptions = new string[shopItems.Length + 2];
+
+            for (int i = 0; i < shopItems.Length; i++)
+            {
+                menuOptions[i] = shopItems[i];
+            }
+
+            menuOptions[shopItems.Length] = "Save Game";
+            menuOptions[shopItems.Length + 1] = "Quit Game";
+
+            return menuOptions;
         }
 
         private void DisplayShopMenu() 
         {
-            Console.WriteLine($"Your gold: {_player.Gold}\n");
-            Console.WriteLine("Your inventory:");
-            Console.WriteLine(_player.GetItemNames());
+            int inputReceieved = -1;
 
-            Console.ReadKey(true);
-            Console.Clear();
+            while (inputReceieved == -1)
+            {
+                string[] playerItemNames = _player.GetItemNames();
+
+                Console.WriteLine($"Your gold: {_player.Gold}\n");
+                Console.WriteLine("Your inventory:");
+                foreach(string itemName in playerItemNames)
+                {
+                    Console.WriteLine(itemName);
+                }
+
+                //I Could of put all of this in the GetInput function if I were allowed to use an array in the first argument
+                Console.WriteLine("What would you like to purchase?");
+
+                for (int i = 0; i < GetShopMenuOptions().Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {GetShopMenuOptions()[i]}");
+                }
+
+                string input = Console.ReadLine();
+
+                
+
+
+
+            }
+
 
 
         }

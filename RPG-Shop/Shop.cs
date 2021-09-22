@@ -18,11 +18,11 @@ namespace RPG_Shop
             _inventory = inventory;
         }
 
-        public bool Sell(Player player, int cost)
+        public bool Sell(Player player, int i)
         {
-            if (player.Gold >= cost)
+            if (player.Gold >= _inventory[i].Cost)
             {
-                _gold += cost;
+                _gold += _inventory[i].Cost;
                 return true;
             }
             else
@@ -34,8 +34,8 @@ namespace RPG_Shop
             string[] itemNames = new string[_inventory.Length];
 
             for (int i = 0; i < _inventory.Length; i++)
-                itemNames[i] = _inventory[i].Name;
-            
+                itemNames[i] = $"{_inventory[i].Name} - {_inventory[i].Cost}g";
+
             return itemNames;
         }
     }
