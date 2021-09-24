@@ -34,15 +34,6 @@ namespace RPG_Shop
             _inventory = newInventory;
         }
         
-        public string[] GetItemNames()
-        {
-            string[] itemNames = new string[_inventory.Length];
-
-            for (int i = 0; i < _inventory.Length; i++)
-                itemNames[i] = _inventory[i].Name;
-
-            return itemNames;
-        }
 
         public void Save(StreamWriter writer)
         {
