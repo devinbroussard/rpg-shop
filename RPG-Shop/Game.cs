@@ -191,6 +191,7 @@ namespace RPG_Shop
                 }
                 Console.WriteLine();
 
+
                 int inputReceived = GetInput("What would you like to purchase?", GetShopMenuOptions());
 
             if (inputReceived >= 0 && inputReceived < GetShopMenuOptions().Length - 2)

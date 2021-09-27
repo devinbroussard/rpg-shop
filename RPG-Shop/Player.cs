@@ -65,5 +65,24 @@ namespace RPG_Shop
 
             return true;
         }
+
+        public void PrintNames()
+        {
+            foreach (Item item in _inventory)
+            {
+                Console.WriteLine(item.Name);
+            }
+        }
+
+        public string[] GetItemNames()
+        {
+            string[] itemNames = new string[_inventory.Length];
+
+            for (int i = 0; i < _inventory.Length; i++)
+                itemNames[i] = _inventory[i].Name;
+
+            return itemNames;
+        }
+
     }
 }
