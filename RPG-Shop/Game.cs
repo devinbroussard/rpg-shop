@@ -61,7 +61,8 @@ namespace RPG_Shop
             Item eggs = new Item { Name = "Eggs for Lodis", Cost = 2 };
             Item smashBros = new Item { Name = "Copy of Smash for Lodis", Cost = 60 };
 
-            _shop = new Shop(shotgun, eggs, smashBros);
+            Item[] shopInventory = { shotgun, eggs, smashBros };
+            _shop = new Shop(shopInventory);
         }
 
         private int GetInput(string description, params string[] options)
@@ -120,6 +121,13 @@ namespace RPG_Shop
         private bool Load() 
         {
             StreamReader reader = new StreamReader("Inventory.txt");
+
+            int _gold;
+
+            if (!int.TryParse(reader.ReadLine(), out _gold))
+                return false;
+
+            _player = new Player(_gold);
 
             if (!_player.Load(reader))
             {
@@ -185,9 +193,9 @@ namespace RPG_Shop
 
                 Console.WriteLine($"Your gold: {_player.Gold}\n");
                 Console.WriteLine("Your inventory:");
-                foreach(string itemName in playerItemNames)
+                for(int i = 0; i < playerItemNames.Length; i++)
                 {
-                    Console.WriteLine(itemName);
+                    Console.WriteLine(playerItemNames[i]);
                 }
                 Console.WriteLine();
 

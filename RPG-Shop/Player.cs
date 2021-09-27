@@ -50,28 +50,22 @@ namespace RPG_Shop
 
         public bool Load(StreamReader reader)
         {
-            if (int.TryParse(reader.ReadLine(), out _gold))
+            int inventoryLength = 0;
+
+            if (!int.TryParse(reader.ReadLine(), out inventoryLength))
                 return false;
 
-            string inventoryLength = Console.ReadLine();
-
-            _inventory = new Item[int.Parse(inventoryLength)];
+            _inventory = new Item[inventoryLength];
 
             for (int i = 0; i < _inventory.Length; i++)
             {
                 _inventory[i].Name = reader.ReadLine();
-                _inventory[i].Cost = int.Parse(reader.ReadLine());
+
+                if (!int.TryParse(reader.ReadLine(), out _inventory[i].Cost))
+                    return false;
             }
 
             return true;
-        }
-
-        public void PrintNames()
-        {
-            foreach (Item item in _inventory)
-            {
-                Console.WriteLine(item.Name);
-            }
         }
 
         public string[] GetItemNames()
